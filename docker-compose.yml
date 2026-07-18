@@ -7,14 +7,11 @@ services:
     container_name: smart-hawk
     restart: on-failure:5
     env_file:
-      - path: .env
-        required: true
+      - .env
     environment:
-      # Override relative host paths from .env for the container volume
       DATABASE_URL: sqlite:/data/smart-hawk.db?mode=rwc
       RUST_LOG: ${RUST_LOG:-info,smart_hawk=debug,teloxide=info}
-      # Ensure From is visible even if env_file mis-parses unquoted spaces/<> 
-      # (set real values in .env with quotes — see .env.example)
+      RUST_BACKTRACE: "1"
     volumes:
       - smart-hawk-data:/data
     logging:
@@ -22,9 +19,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    # Always keep stdout/stderr attached
-    stdin_open: false
-    tty: false
     init: true
 
 volumes:
