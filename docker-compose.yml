@@ -1,0 +1,21 @@
+services:
+  smart-hawk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: smart-hawk:local
+    container_name: smart-hawk
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: sqlite:/data/smart-hawk.db?mode=rwc
+      RUST_LOG: ${RUST_LOG:-info,smart_hawk=debug}
+    volumes:
+      - smart-hawk-data:/data
+    # Optional: pass host Chromium (uncommon; prefer native binary for browser)
+    # environment:
+    #   CHROMIUM_PATH: /usr/bin/chromium
+
+volumes:
+  smart-hawk-data:

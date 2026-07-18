@@ -1,0 +1,15 @@
+target
+.git
+.gitignore
+data
+*.db
+*.db-*
+.env
+.env.*
+!.env.example
+docs
+**/*.md
+!README.md
+.idea
+.vscode
+*.log
