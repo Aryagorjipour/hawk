@@ -18,16 +18,26 @@ pub struct CompositeMailer {
 
 impl CompositeMailer {
     pub fn from_config(config: &Config) -> DomainResult<Self> {
+        info!(diag = %config.email_diag(), "email_config");
+
         let resend = match (
             config.resend_api_key.as_deref(),
             config.resend_from.as_deref(),
         ) {
             (Some(key), Some(from)) if !key.is_empty() && !from.is_empty() => {
-                info!("email: Resend primary configured");
+                info!(from_len = from.len(), "email: Resend primary configured");
                 Some(ResendMailer::new(key, from)?)
             }
             (Some(_), None) => {
-                warn!("RESEND_API_KEY set but RESEND_FROM/EMAIL_FROM missing — Resend disabled");
+                warn!(
+                    "RESEND_API_KEY set but RESEND_FROM/EMAIL_FROM missing or empty — Resend disabled. \
+                     Use a quoted value in .env, e.g. RESEND_FROM=\"Smart Hawk <you@domain.com>\" \
+                     or bare: RESEND_FROM=you@domain.com"
+                );
+                None
+            }
+            (None, Some(_)) => {
+                warn!("RESEND_FROM set but RESEND_API_KEY missing — Resend disabled");
                 None
             }
             _ => None,
@@ -40,9 +50,11 @@ impl CompositeMailer {
             }
             _ => {
                 if resend.is_none() {
-                    warn!("no Resend or SMTP configured — email delivery disabled");
+                    warn!(
+                        "no Resend or SMTP configured — email delivery disabled ({})",
+                        config.email_diag()
+                    );
                 }
-                // SmtpMailer::from_config with Nones returns unconfigured instance
                 None
             }
         };

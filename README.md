@@ -102,9 +102,24 @@ Enable inline mode and payments (Stars) in [@BotFather](https://t.me/BotFather) 
 | `DATABASE_URL` | no | default `sqlite:data/smart-hawk.db?mode=rwc` |
 | `ABOUT_LANDING_URL` | no | About screen link |
 | `ABOUT_GITHUB_URL` | no | About screen link |
-| `RESEND_API_KEY` / `RESEND_FROM` | no | Primary email (Resend API) |
+| `RESEND_API_KEY` / `RESEND_FROM` | no | Primary email (Resend API). **Quote** `RESEND_FROM` if it has spaces/`<>` |
 | `SMTP_URL` / `SMTP_FROM` | no | SMTP fallback if Resend fails or unset |
 | `EMAIL_FROM` | no | Shared from-address for Resend/SMTP |
+
+### Email `.env` example (works with Docker)
+
+```env
+RESEND_API_KEY=re_your_key
+RESEND_FROM="Smart Hawk <hawk@yourdomain.com>"
+```
+
+Or bare address (no quotes needed):
+
+```env
+RESEND_FROM=hawk@yourdomain.com
+```
+
+Do **not** leave `RESEND_FROM=` empty in the shell/environment — empty vars block `.env` values.
 | `CHROMIUM_PATH` | no | Browser fallback binary |
 | `WORKER_POOL_SIZE` | no | default `4` |
 | `SCHEDULE_POLL_SECS` | no | default `30` |

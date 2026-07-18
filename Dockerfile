@@ -40,10 +40,12 @@ COPY --from=builder /app/target/release/smart-hawk /usr/local/bin/smart-hawk
 USER hawk
 ENV RUST_LOG=info,smart_hawk=debug \
     DATABASE_URL=sqlite:/data/smart-hawk.db?mode=rwc \
-    HOME=/home/hawk
+    HOME=/home/hawk \
+    RUST_BACKTRACE=1
 
 VOLUME ["/data"]
 
 # No HTTP server — process health is "container running"
 STOPSIGNAL SIGTERM
+# -e forces line-buffered-ish behavior for some runtimes; binary also eprintln! on boot
 CMD ["smart-hawk"]
