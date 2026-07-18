@@ -152,9 +152,7 @@ fn strip_env_value(raw: &str) -> String {
         }
     }
     // Remove accidental UTF-8 BOM / zero-width junk on values
-    v.trim()
-        .trim_start_matches('\u{feff}')
-        .to_string()
+    v.trim().trim_start_matches('\u{feff}').to_string()
 }
 
 fn env_string(key: &str) -> Option<String> {
