@@ -11,8 +11,10 @@ categories = ["command-line-utilities", "web-programming"]
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
-teloxide = { version = "0.13", features = ["macros", "rustls", "ctrlc_handler"] }
-sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "chrono", "uuid", "migrate"] }
+# default-features=false is required: teloxide defaults to native-tls/OpenSSL.
+# Pure rustls avoids system openssl-sys / pkg-config on servers.
+teloxide = { version = "0.13", default-features = false, features = ["macros", "rustls", "ctrlc_handler"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite", "chrono", "uuid", "migrate", "macros"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "gzip", "cookies"] }
 aes-gcm = "0.10"
 rand = "0.8"

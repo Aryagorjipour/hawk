@@ -3,8 +3,9 @@
 FROM rust:1-bookworm AS builder
 WORKDIR /app
 
+# Pure rustls TLS — no system OpenSSL headers required for the build.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends pkg-config libssl-dev \
+    && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Cache dependency crates (dummy sources first)
@@ -28,7 +29,6 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
-        libssl3 \
         curl \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --uid 10001 --shell /usr/sbin/nologin hawk \
