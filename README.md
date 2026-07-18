@@ -63,8 +63,9 @@ Dependency rule: **domain ← application ← adapters**; `bootstrap` wires conc
 
 - Rust 1.75+ (tested on 1.97)
 - SQLite (bundled via sqlx)
+- **No system OpenSSL** — the bot links **rustls** only (works on minimal servers)
 - Optional: Chromium for JS-heavy pages
-- Optional: SMTP for email delivery
+- Optional: Resend and/or SMTP for email delivery
 
 ## Quick start
 
@@ -75,10 +76,19 @@ cp .env.example .env
 cargo run --release
 ```
 
-Generate a master key:
+If you previously hit `openssl-sys` / `pkg-config` errors, pull latest and rebuild:
+
+```bash
+git pull
+cargo clean
+cargo build --release
+```
+
+Generate a master key (any CSPRNG is fine; `openssl` CLI is optional):
 
 ```bash
 openssl rand -hex 32
+# or: python3 -c 'import secrets; print(secrets.token_hex(32))'
 ```
 
 Enable inline mode and payments (Stars) in [@BotFather](https://t.me/BotFather) for `@SmartHawk_bot`.
